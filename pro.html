@@ -64,4 +64,37 @@
         crossorigin="anonymous"></script>
 </body>
 
-</html>
+</html>                   
+function handleAddTask() {
+
+    const checkIcon = document.createElement("i")
+    checkIcon.setAttribute("class", "bi bi-check2-circle")
+    const checkBtn = document.createElement("button")
+    checkBtn.setAttribute = ("class", 'btn btn-success')
+    checkBtn.addEventListener("click", handleCheck)
+    checkBtn.append(checkIcon)
+
+    const pendingIcon = document.createElement("i")
+    pendingIcon.setAttribute("class", "bi bi-hourglass-split")
+    const pendingBtn = document.createElement("button")
+    pendingBtn.setAttribute = ("class", 'btn btn-waring')
+    pendingBtn.addEventListener("click", handlePending)
+    pendingBtn.append(pendingIcon)
+
+    const deleteIcon = document.createElement("i")
+    deleteIcon.setAttribute("class", "bi bi-pending2-circle")
+    const deleteBtn = document.createElement("button")
+    deleteBtn.setAttribute = ("class", 'bi bi-x-square')
+    deleteBtn.addEventListener("click", handledelete)
+    deleteBtn.append(deleteIcon)
+
+    task.appendChild(checkBtn)
+    task.appendChild(pendingBtn)
+    task.appendChild(deleteBtn)
+
+    taskDiv.appendChild(task)
+    function handledelete() {
+        taskInput.remove()
+    }
+
+
