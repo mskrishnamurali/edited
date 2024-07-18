@@ -65,36 +65,107 @@
 </body>
 
 </html>                   
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bootstrap demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+  </head>
+  <body>
+    <div class="text-center container">
+      <h1>To-Do App</h1>
+      <br />
+      <div class="w-50 offset-3 d-flex justify-content-center">
+        <input type="text" id="newTask" class="form-control bg-light" />
+        <button class="btn btn-info ms-3" onclick="handleAddTask()">
+          <i class="bi bi-plus-circle"></i>
+        </button>
+      </div>
+      <div>
+        <br />
+        <h2>Tasks</h2>
+        <div id="tasks"></div>
+      </div>
+    </div>
+    <script src="to-do-app.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
+
+
+
+const taskInput = document.getElementById("newTask");
+
 function handleAddTask() {
+  if (taskInput.value.toString().length > 0) {
+    const taskDiv = document.getElementById("tasks");
 
-    const checkIcon = document.createElement("i")
-    checkIcon.setAttribute("class", "bi bi-check2-circle")
-    const checkBtn = document.createElement("button")
-    checkBtn.setAttribute = ("class", 'btn btn-success')
-    checkBtn.addEventListener("click", handleCheck)
-    checkBtn.append(checkIcon)
+    const checkIcon = document.createElement("i");
+    checkIcon.setAttribute("class", "bi bi-check2-square");
+    const checkBtn = document.createElement("button");
+    checkBtn.setAttribute("class", "btn btn-success w-25");
+    checkBtn.addEventListener("click", handleCheck);
+    checkBtn.append(checkIcon);
 
-    const pendingIcon = document.createElement("i")
-    pendingIcon.setAttribute("class", "bi bi-hourglass-split")
-    const pendingBtn = document.createElement("button")
-    pendingBtn.setAttribute = ("class", 'btn btn-waring')
-    pendingBtn.addEventListener("click", handlePending)
-    pendingBtn.append(pendingIcon)
+    const pendingIcon = document.createElement("i");
+    pendingIcon.setAttribute("class", "bi bi-hourglass-split");
+    const pendingBtn = document.createElement("button");
+    pendingBtn.setAttribute("class", "btn btn-warning w-25");
+    pendingBtn.addEventListener("click", handlePending);
+    pendingBtn.append(pendingIcon);
 
-    const deleteIcon = document.createElement("i")
-    deleteIcon.setAttribute("class", "bi bi-pending2-circle")
-    const deleteBtn = document.createElement("button")
-    deleteBtn.setAttribute = ("class", 'bi bi-x-square')
-    deleteBtn.addEventListener("click", handledelete)
-    deleteBtn.append(deleteIcon)
+    const deleteIcon = document.createElement("i");
+    deleteIcon.setAttribute("class", "bi bi-x-square");
+    const deleteBtn = document.createElement("button");
+    deleteBtn.setAttribute("class", "btn btn-danger w-25");
+    deleteBtn.addEventListener("click", handleDelete);
+    deleteBtn.append(deleteIcon);
 
-    task.appendChild(checkBtn)
-    task.appendChild(pendingBtn)
-    task.appendChild(deleteBtn)
+    const taskBtn = document.createElement("button");
+    taskBtn.setAttribute("class", "btn btn-light w-100");
+    taskBtn.addEventListener("click", handleReset);
+    taskBtn.append(taskInput.value);
 
-    taskDiv.appendChild(task)
-    function handledelete() {
-        taskInput.remove()
+    const task = document.createElement("div");
+    task.setAttribute("class", "btn-group mb-2");
+    task.setAttribute("style", "width: 800px");
+    task.appendChild(checkBtn);
+    task.appendChild(taskBtn);
+    task.appendChild(pendingBtn);
+    task.appendChild(deleteBtn);
+
+    taskDiv.appendChild(task);
+
+    function handleDelete() {
+      setTimeout(() => {
+        task.remove();
+      }, 3000);
     }
 
+    function handlePending() {
+      taskBtn.setAttribute("class", "btn btn-warning w-100");
+    }
 
+    function handleCheck() {
+      taskBtn.setAttribute("class", "btn btn-success w-100");
+    }
+    function handleReset() {
+      taskBtn.setAttribute("class", "btn btn-light w-100");
+    }
+  }
+}
