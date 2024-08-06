@@ -211,3 +211,265 @@ function handleAddTask() {
 </body>
 
 </html>
+import { useState } from "react";
+import { Button } from "react-bootstrap";
+import Form from "react-bootstrap/Form";
+import { useLocation, useNavigate } from "react-router-dom";
+
+function Demo1() {
+    const [user, setUser] = useState({});
+    const location = useLocation();
+    const [userList, setUserList] = useState(location.state.users || []);
+    const navigate = useNavigate();
+    // allows switching to a different component available as Route
+
+    function handleChange(event) {
+        setUser({ ...user, [event.target.name]: event.target.value });
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        setUserList([...userList, user]);
+    }
+
+    function handleClick() {
+        navigate("/a", {
+            state: {
+                users: userList,
+            },
+        });
+    }
+    return (
+        <Form className="w-50 offset-3" onSubmit={handleSubmit}>
+            <br />
+            <br />
+            <h2>Register Here</h2>
+            <br />
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label>Full Name</Form.Label>
+                <Form.Control
+                    type="text"
+                    name="studentName"
+                    placeholder="Enter your name"
+                    onChange={handleChange}
+                />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label>Your Age</Form.Label>
+                <Form.Control
+                    type="number"
+                    name="studentAge"
+                    placeholder="Enter your age"
+                    onChange={handleChange}
+                />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label>Your Place</Form.Label>
+                <Form.Control
+                    type="text"
+                    name="studentPlace"
+                    placeholder="Enter your place"
+                    onChange={handleChange}
+                />
+            </Form.Group>
+            <Button type="submit" variant="success">
+                ADD USER
+            </Button>
+            <br />
+            <div className="text-center">
+                <Button variant="info" onClick={handleClick}>
+                    VIEW USERS
+                </Button>
+            </div>
+        </Form>
+    );
+}
+
+export default Demo1;
+import { useState } from "react";
+import { Button, Table } from "react-bootstrap";
+import { useLocation, useNavigate } from "react-router-dom";
+
+function Demo3() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [userList, setUserList] = useState(location.state.users);
+    const [selectedId, setSelectedId] = useState(-1);
+    const [updateUser, setUpdateUser] = useState({});
+
+    function handleClick() {
+        navigate("/", {
+            state: {
+                users: userList,
+            },
+        });
+    }
+
+    function handleReset() {
+        setUserList([]);
+    }
+
+    function handleDelete(id) {
+        // console.log("Index of data to be deleted : " + id);
+        const newUsers = userList.filter((user, index) => {
+            if (index !== id) {
+                return user;
+            }
+        });
+        setUserList(newUsers);
+    }
+
+    function handleSelect(id) {
+        setSelectedId(id);
+        const selectedUser = userList.filter((user, index) => {
+            if (index === id) {
+                return user;
+            }
+        });
+        console.log(selectedUser);
+        setUpdateUser(selectedUser[0]);
+    }
+
+    function handleCancel() {
+        setSelectedId(-1);
+    }
+
+    function handleChange(event) {
+        setUpdateUser({ ...updateUser, [event.target.name]: event.target.value });
+    }
+
+    function handleSave() {
+        const updatedUsers = userList.map((user, index) => {
+            if (index === selectedId) {
+                return updateUser;
+            } else {
+                return user;
+            }
+        });
+        setUserList(updatedUsers);
+        setSelectedId(-1);
+    }
+
+    return (
+        <div className="container pt-3">
+            <div className="text-center mb-4">
+                <Button variant="info" onClick={handleClick}>
+                    REGISTER
+                </Button>
+                <Button variant="danger" className="ms-5" onClick={handleReset}>
+                    CLEAR DATA
+                </Button>
+            </div>
+            <Table striped bordered hover className="text-center">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Student Name</th>
+                        <th>Student Age</th>
+                        <th>Student Place</th>
+                        <th colSpan={2}>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {userList.map((user, index) => {
+                        return (
+                            <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>
+                                    {selectedId === index ? (
+                                        <input
+                                            type="text"
+                                            name="studentName"
+                                            value={updateUser.studentName}
+                                            onChange={handleChange}
+                                        />
+                                    ) : (
+                                        user.studentName
+                                    )}
+                                </td>
+                                <td>
+                                    {selectedId === index ? (
+                                        <input
+                                            type="text"
+                                            name="studentAge"
+                                            onChange={handleChange}
+                                            value={updateUser.studentAge}
+                                        />
+                                    ) : (
+                                        user.studentAge
+                                    )}
+                                </td>
+                                <td>
+                                    {selectedId === index ? (
+                                        <input
+                                            type="text"
+                                            name="studentPlace"
+                                            onChange={handleChange}
+                                            value={updateUser.studentPlace}
+                                        />
+                                    ) : (
+                                        user.studentPlace
+                                    )}
+                                </td>
+                                <td>
+                                    {selectedId === index ? (
+                                        <Button variant="success" onClick={handleSave}>
+                                            SAVE
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            variant="primary"
+                                            onClick={() => handleSelect(index)}
+                                        >
+                                            UPDATE
+                                        </Button>
+                                    )}
+                                </td>
+                                <td>
+                                    {selectedId === index ? (
+                                        <Button variant="warning" onClick={handleCancel}>
+                                            CANCEL
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            variant="danger"
+                                            onClick={() => handleDelete(index)}
+                                        >
+                                            DELETE
+                                        </Button>
+                                    )}
+                                </td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </Table>
+        </div>
+    );
+}
+
+export default Demo3;
+
+// http://localhost:3000 ====> Base URL
+// http://localhost:3000/a =====> URL/Endpoint
+// http://localhost:3000/b =====> URL/Endpoint
+import Demo2 from './components/Demo2';
+import Demo3 from './components/Demo3';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import './App.css';
+
+function App() {
+  return (
+    <>
+      <Router>
+        <Routes>
+          <Route element={<Demo2 />} path='/'></Route>
+          <Route element={<Demo3 />} path='/a'></Route>
+        </Routes>
+      </Router>
+    </>
+  );
+}
+
+export default App;
+
