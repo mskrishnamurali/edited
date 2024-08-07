@@ -472,4 +472,269 @@ function App() {
 }
 
 export default App;
+**********************************************************************************************************************************
+        import { useEffect, useState } from "react";
+import { Button, Form, Table } from "react-bootstrap";
+import { useLocation, useNavigate } from "react-router-dom";
 
+function View() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [users, setUsers] = useState(
+    location.state === null ? [] : location.state.users
+  );
+  const [selectedId, setSelectedId] = useState(-1);
+  const [selectedUser, setSelectedUser] = useState({
+    studentName: "",
+    studentAge: "",
+    studentPlace: "",
+  });
+
+  function goBack() {
+    navigate("/", {
+      state: {
+        users: users,
+      },
+    });
+  }
+
+  function handleChange(event) {
+    setSelectedUser({
+      ...selectedUser,
+      [event.target.name]: event.target.value,
+    });
+  }
+
+  function handleUpdate(id) {
+    setSelectedId(id);
+    const updateUser = users.filter((user, index) => {
+      if (index === id) {
+        return user;
+      }
+    });
+    setSelectedUser(updateUser[0]);
+  }
+
+  function handleSave() {
+    const updatedUsers = users.map((user, index) => {
+      if (selectedId === index) {
+        return selectedUser;
+      } else {
+        return user;
+      }
+    });
+    setUsers(updatedUsers);
+    setSelectedId(-1);
+  }
+
+  function handleCancel() {
+    setSelectedId(-1);
+  }
+
+  return (
+    <div className="mt-3 container">
+      <h2>
+        <i
+          className="bi bi-rewind-circle-fill"
+          style={{ color: "blue" }}
+          onClick={goBack}
+        ></i>{" "}
+        &nbsp;&nbsp;&nbsp; Users
+      </h2>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>NAME</th>
+            <th>AGE</th>
+            <th>PLACE</th>
+            <th colSpan={2}>ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user, index) => {
+            return (
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>
+                  {selectedId === index ? (
+                    <Form.Control
+                      type="text"
+                      onChange={handleChange}
+                      value={selectedUser.studentName}
+                      name="studentName"
+                    />
+                  ) : (
+                    user.studentName
+                  )}
+                </td>
+                <td>
+                  {selectedId === index ? (
+                    <Form.Control
+                      type="text"
+                      onChange={handleChange}
+                      value={selectedUser.studentAge}
+                      name="studentAge"
+                    />
+                  ) : (
+                    user.studentAge
+                  )}
+                </td>
+                <td>
+                  {selectedId === index ? (
+                    <Form.Control
+                      type="text"
+                      onChange={handleChange}
+                      value={selectedUser.studentPlace}
+                      name="studentPlace"
+                    />
+                  ) : (
+                    user.studentPlace
+                  )}
+                </td>
+                <td>
+                  {selectedId === index ? (
+                    <Button variant="success" onClick={handleSave}>
+                      SAVE
+                    </Button>
+                  ) : (
+                    <Button onClick={() => handleUpdate(index)}>UPDATE</Button>
+                  )}
+                </td>
+                <td>
+                  {selectedId === index ? (
+                    <Button variant="warning" onClick={handleCancel}>
+                      CANCEL
+                    </Button>
+                  ) : (
+                    <Button variant="danger">DELETE</Button>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
+    </div>
+  );
+}
+
+export default View;
+
+        import { useEffect, useState } from "react";
+import { Button, Card, Form } from "react-bootstrap";
+import { useLocation, useNavigate } from "react-router-dom";
+
+function Register() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [user, setUser] = useState({
+    studentName: "",
+    studentAge: "",
+    studentPlace: "",
+  });
+  const [users, setUsers] = useState(
+    location.state === null ? [] : location.state.users
+  );
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    setUsers([...users, user]);
+    setUser({
+      studentName: "",
+      studentAge: "",
+      studentPlace: "",
+    });
+  }
+
+  function handleChange(event) {
+    setUser({ ...user, [event.target.name]: event.target.value });
+  }
+
+  function handleClick() {
+    navigate("/v", {
+      state: {
+        users: users,
+      },
+    });
+  }
+
+  return (
+    <div className="container mt-5 col-6">
+      <Card>
+        <Card.Header className="text-center">
+          <h1>Register</h1>
+        </Card.Header>
+        <Form onSubmit={handleSubmit}>
+          <Card.Body>
+            <Form.Group className="mb-3">
+              <Form.Label>Your Name</Form.Label>
+              <Form.Control
+                type="text"
+                onChange={handleChange}
+                value={user.studentName}
+                name="studentName"
+                placeholder="Enter your full name"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Your Age</Form.Label>
+              <Form.Control
+                type="number"
+                name="studentAge"
+                value={user.studentAge}
+                onChange={handleChange}
+                placeholder="Enter your age"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Your Place</Form.Label>
+              <Form.Control
+                type="text"
+                name="studentPlace"
+                value={user.studentPlace}
+                onChange={handleChange}
+                placeholder="Enter your place"
+              />
+            </Form.Group>
+          </Card.Body>
+          <Card.Footer>
+            <Button variant="success" type="submit">
+              REGISTER
+            </Button>
+          </Card.Footer>
+        </Form>
+      </Card>
+      <div className="text-center mt-5">
+        <Button onClick={handleClick}>VIEW</Button>
+      </div>
+    </div>
+  );
+}
+
+export default Register;
+
+
+
+
+
+        import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Register from "./components/Register";
+import View from "./components/View";
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Register />} />
+        <Route path="/v" element={<View />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+
+
+
+        
+***********************************************************************************************************************
